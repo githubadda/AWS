@@ -1,0 +1,16 @@
+SSH Passwordless Login Using SSH Keygen
+-------------------------------------------------
+
+
+SSH Client : 192.168.0.12 ( Fedora 21 )
+SSH Remote Host : 192.168.0.11 ( CentOS 7 )
+
+[tecmint@192.168.0.12 ~]$ ssh-keygen -t rsa
+$ ssh sheena@192.168.0.11 mkdir -p .ssh
+$ cat .ssh/id_rsa.pub | ssh sheena@192.168.0.11 'cat >> .ssh/authorized_keys'
+ssh sheena@192.168.0.11 "chmod 700 .ssh; chmod 640 .ssh/authorized_keys"
+ssh sheena@192.168.0.11
+
+
+ssh-agent bash 
+$ ssh-add ~/.ssh/keypair.pem

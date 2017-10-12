@@ -1,0 +1,104 @@
+#setenforce 0    ( to disable the selinux )
+
+ 
+ 
+
+
+
+--------
+samba
+--------
+
+yum install -y samba*
+
+mkdir /home/dir1
+
+chmod 777 /home/dir1
+
+vi /etc/samba/smb.conf
+
+workgroup = WORKGROUP
+
+[dir1]
+	path = /home/dir1
+	writable = yes
+	readable = yes
+	guest only = yes
+	guest ok = yes
+	create mode = 0777
+	directory mode = 0777
+:wq!
+
+chcon -t samba_share_t dir1
+
+systemctl start smb nmb
+systemctl enable smb nmb
+
+------END------
+
+
+--------------------------
+NFS
+-------------------------
+
+yum install -y nfs-utils nfs-utils-lib
+
+systemctl enable nfs-server rpcbind nfs-lock nfs-idmap
+
+systemctl start nfs-server rpcbind nfs-lock nfs-idmap
+
+mkdir /var/unixmen_share 
+chmod 777 /var/unixmen_share/
+
+vi /etc/exports
+/var/unixmen_share/     192.168.1.0/24(rw,sync,no_root_squash,no_all_squash)
+
+/var/unixmen_share – shared directory
+192.168.1.0/24 – IP address range of clients
+rw – Writable permission to shared folder
+sync – Synchronize shared directory
+no_root_squash – Enable root privilege
+no_all_squash - Enable user’s authority
+
+systemctl restart nfs-server
+
+Client Side Configuration
+--------------------------
+
+yum install nfs-utils nfs-utils-lib
+systemctl enable nfs-server rpcbind nfs-lock nfs-idmap
+systemctl start nfs-server rpcbind nfs-lock nfs-idmap
+
+mkdir /var/nfs_share
+mount -t nfs 192.168.1.101:/var/unixmen_share/ /var/nfs_share/ 
+		mount.nfs: Connection timed out
+	
+rpcinfo -p
+firewall-cmd --permanent --add-port=111/tcp
+firewall-cmd --reload
+mount -t nfs 192.168.1.101:/var/unixmen_share/ /var/nfs_share/
+mount
+
+vi /etc/fstab
+192.168.1.101:/var/unixmen_share/ /var/nfs_share/ nfs rw,sync,hard,intr 0 0
+
+reboot the system and check the whether the nfs share folder is mount permanent or not
+
+-------END------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

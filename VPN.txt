@@ -1,0 +1,81 @@
+create a vpc account polyglot - 172.18.0.0/16
+
+create a subnet
+	public	172.18.1.0/24
+	private	172.18.2.0/24
+
+create internetgateway
+	attach to the vpc 
+	
+route tables
+	routes- edit 
+	add 0.0.0.0/0
+
+create another route tables - privatert
+	add select the privatert
+		subnet Association select the priavte route(172.18.2.0)
+	
+create instance with private n public
+
+Now login in to public server through ssh and try to enter into 
+private instance  by {ssh 172.18.2.108}
+
+Allow the 172.18.0.0/16 in security group in public instance
+
+open the .pem file and the copy the entire content 
+create the file vi key.pem and paste the content 
+
+change the permissions on file 
+	chmod 400 key.pem
+	
+$ssh -i key.pem ec2-user@172.18.2.108 (now u can able to login into priv.)
+
+try to install any package through yum 
+	-still private instance cannot access the internetgateway
+	
+create Nat getway 
+	select the public subnet
+ 
+route tables
+	select the privatert 
+		routes- edit -  add the ip 0.0.0.0/0 with nat target 
+		
+Now u can able to access the internet 
+
+Now launch the another instance - openvpn
+
+login into openvpn instance through ssh  username-openvpnas
+
+https://35.154.180.37:943/admin
+Admin  UI: https://35.154.180.37:943/admin
+Client UI: https://35.154.180.37:943/
+
+now change the password of openvpn
+
+$sudo su -
+passwd openvpn
+
+From the firefox open https://35.154.180.37:943/
+username- openvpn
+pw-
+login
+
+install the package and u will connected to seperate network 
+
+connect the vpn by username and pw 
+
+Now u can able the access the internet through priavte instance 
+check with private ipaddrs through ssh 
+
+		
+		
+
+
+
+
+
+
+
+
+	
+		
